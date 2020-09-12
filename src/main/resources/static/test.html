@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Your First WebSocket!</title>
+</head>
+<body>
+<h1 style="text-align: center;">Hello World WebSocket Client</h1>
+<br>
+<div style="text-align: center;">
+    <form action="">
+        <input onclick="doSend()" value="Send" type="button">
+        <input id="textID" name="message" value="Hello WebSocket!" type="text"><br>
+    </form>
+</div>
+<div id="output"></div>
+</body>
+
+<script type="text/javascript">
+    var wsUri = "ws://localhost:8080/ws";
+    var ws = new WebSocket(wsUri);
+    var output = document.getElementById("output");
+
+    // 연결
+    ws.onopen = function (evt) {
+        writeToScreen("Connected to Endpoint!");
+        var textID = document.getElementById("textID").value;
+        doSend(textID.value);
+    };
+
+    //받기
+    ws.onmessage = function (evt) {
+        writeToScreen("Message Received: " + evt.data);
+    };
+
+    ws.onerror = function (evt) {
+        writeToScreen('ERROR: ' + evt.data);
+    };
+
+    ws.onclose = function(evt) {
+        writeToScreen("out !  ");
+        var textID = document.getElementById("textID").value;
+        doSend(textID.value);
+    };
+
+    // 보내기
+    function doSend() {
+        var msg = document.getElementById("textID").value;
+        writeToScreen("Message Sent: " + JSON.stringify(msg));
+        ws.send(JSON.stringify(msg));
+    }
+
+    function writeToScreen(message) {
+        var pre = document.createElement("p");
+        pre.style.wordWrap = "break-word";
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+
+</script>
+</html>
